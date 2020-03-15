@@ -44,7 +44,10 @@ module.exports = {
     },
     searchPosts: async (_, { searchTerm }, { Post }) => {
       if (searchTerm) {
-        const searchResults = await Post.find({ $text: { $search: searchTerm } }, { score: { $meta: 'textScore' } })
+        const searchResults = await Post.find(
+          { $text: { $search: searchTerm } },
+          { score: { $meta: 'textScore' } }
+        )
           .sort({
             score: { $meta: 'textScore' },
             likes: 'desc'
@@ -81,7 +84,11 @@ module.exports = {
   },
 
   Mutation: {
-    addPost: async (_, { title, imageUrl, categories, description, creatorId }, { Post }) => {
+    addPost: async (
+      _,
+      { title, imageUrl, categories, description, creatorId },
+      { Post }
+    ) => {
       const newPost = await new Post({
         title,
         imageUrl,
@@ -91,8 +98,16 @@ module.exports = {
       }).save();
       return newPost;
     },
-    updateUserPost: async (_, { postId, userId, title, imageUrl, categories, description }, { Post }) => {
-      const post = await Post.findOneAndUpdate({ _id: postId, createdBy: userId }, { $set: { title, imageUrl, categories, description } }, { new: true });
+    updateUserPost: async (
+      _,
+      { postId, userId, title, imageUrl, categories, description },
+      { Post }
+    ) => {
+      const post = await Post.findOneAndUpdate(
+        { _id: postId, createdBy: userId },
+        { $set: { title, imageUrl, categories, description } },
+        { new: true }
+      );
       return post;
     },
     deleteUserPost: async (_, { postId }, { Post }) => {
@@ -122,11 +137,19 @@ module.exports = {
       return post.messages[0];
     },
     likePost: async (_, { postId, username }, { Post, User }) => {
-      const post = await Post.findOneAndUpdate({ _id: postId }, { $inc: { likes: 1 } }, { new: true });
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $inc: { likes: 1 } },
+        { new: true }
+      );
 
       // find user, add id of post to its favorites array which will be populated as Posts
 
-      const user = await User.findOneAndUpdate({ username }, { $addToSet: { favorites: postId } }, { new: true }).populate({
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $addToSet: { favorites: postId } },
+        { new: true }
+      ).populate({
         path: 'favorites',
         model: 'Post'
       });
@@ -136,11 +159,20 @@ module.exports = {
       return { likes: post.likes, favorites: user.favorites };
     },
     unlikePost: async (_, { postId, username }, { Post, User }) => {
-      const post = await Post.findOneAndUpdate({ _id: postId }, { $inc: { likes: -1 } }, { new: true });
+      // Find Post, add -1 to its 'like' value
+      const post = await Post.findOneAndUpdate(
+        { _id: postId },
+        { $inc: { likes: -1 } },
+        { new: true }
+      );
 
       // find user, remove id of post to its favorites array which will be populated as Posts
 
-      const user = await User.findOneAndUpdate({ username }, { $pull: { favorites: postId } }, { new: true }).populate({
+      const user = await User.findOneAndUpdate(
+        { username },
+        { $pull: { favorites: postId } },
+        { new: true }
+      ).populate({
         path: 'favorites',
         model: 'Post'
       });
@@ -149,15 +181,18 @@ module.exports = {
 
       return { likes: post.likes, favorites: user.favorites };
     },
+
     signinUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({ username });
       if (!user) throw new Error('User not found');
+
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (!isValidPassword) {
         throw new Error('Invalid password');
       }
       return { token: createToken(user, process.env.SECRET, '1hr') };
     },
+
     signupUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({ username: username });
       if (user) {
