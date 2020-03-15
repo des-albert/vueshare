@@ -194,7 +194,7 @@ module.exports = {
     },
 
     signupUser: async (_, { username, email, password }, { User }) => {
-      const user = await User.findOne({ username: username });
+      const user = await User.findOne({ username });
       if (user) {
         throw new Error('User already exists');
       }

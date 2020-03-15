@@ -1,5 +1,6 @@
 <template>
   <v-container mt-5 pt-5>
+
     <!--     Signup Title -->
 
     <v-row justify="center">
@@ -9,6 +10,7 @@
     </v-row>
 
     <!--     Error Alert -->
+
     <v-layout v-if="error" row wrap>
       <v-flex xs12 sm6 offset-sm3>
         <form-alert :message="error.message" />
@@ -64,45 +66,96 @@
   </v-container>
 </template>
 <script>
-  import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
-  export default {
-    name: 'Signup',
-    data() {
-      return {
-        isFormValid: true,
-        username: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
-        usernameRules: [username => !!username || 'Username is required', username => username.length < 10 || 'Username must be less than 10 characters'],
-        emailRules: [email => !!email || 'Email is required', email => /.@+./.test(email) || 'Email must be valid'],
-        passwordRules: [password => !!password || 'Password is required', password => password.length >= 4 || 'Username must be at least 4 characters', confirmation => confirmation === this.password || 'Passwords must match']
-      };
-    },
+export default {
+  name: "Signup",
+  data() {
+    return {
+      isFormValid: true,
+      username: "",
+      email: "",
+      password: "",
+      passwordConfirmation: "",
+      usernameRules: [
+        username => !!username || "Username is required",
+        username =>
+          username.length < 10 || "Username must be less than 10 characters"
+      ],
+      emailRules: [
+        email => !!email || "Email is required",
+        email => /.@+./.test(email) || "Email must be valid"
+      ],
+      passwordRules: [
+        password => !!password || "Password is required",
+        password =>
+          password.length >= 4 || "Username must be at least 4 characters",
+        confirmation => confirmation === this.password || "Passwords must match"
+      ]
+    };
+  },
 
-    computed: {
-      ...mapGetters(['loading', 'error', 'user'])
-    },
-    watch: {
-      user(value) {
-        // if user changes redirect to home page
+  computed: {
+    ...mapGetters(["loading", "error", "user"])
+  },
+  watch: {
+    user(value) {
+      // if user changes redirect to home page
 
-        if (value) {
-          this.$router.push('/');
-        }
-      }
-    },
-    methods: {
-      handleSignupUser() {
-        if (this.$refs.form.validate()) {
-          this.$store.dispatch('signupUser', {
-            username: this.username,
-            email: this.email,
-            password: this.password
-          });
-        }
+      if (value) {
+        this.$router.push("/");
       }
     }
-  };
+  },
+  methods: {
+    handleSignupUser() {
+      if (this.$refs.form.validate()) {
+        this.$store.dispatch("signupUser", {
+          username: this.username,
+          email: this.email,
+          password: this.password
+        });
+      }
+    }
+  }
+};
 </script>
+
+<style>
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
