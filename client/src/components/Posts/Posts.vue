@@ -50,64 +50,61 @@
   </v-container>
 </template>
 <script>
-  import { INFINITE_SCROLL_POSTS } from '../../queries';
-  import moment from 'moment';
+import { INFINITE_SCROLL_POSTS } from '../../queries';
+import moment from 'moment';
 
-  const pageSize = 2;
+const pageSize = 2;
 
-  export default {
-    name: 'Posts',
-    data() {
-      return {
+export default {
+  name: 'Posts',
+  data() {
+    return {
+      pageNum: 1,
+      showPostCreator: false
+    };
+  },
+  apollo: {
+    infiniteScrollPosts: {
+      query: INFINITE_SCROLL_POSTS,
+      variables: {
         pageNum: 1,
-        showPostCreator: false
-      };
-    },
-    apollo: {
-      infiniteScrollPosts: {
-        query: INFINITE_SCROLL_POSTS,
-        variables: {
-          pageNum: 1,
-          pageSize
-        }
-      }
-    },
-    computed: {
-      showMoreEnabled() {
-        return this.infiniteScrollPosts && this.infiniteScrollPosts.hasMore;
-      }
-    },
-    methods: {
-      showMorePosts() {
-        this.pageNum += 1;
-
-        this.$apollo.queries.infiniteScrollPosts.fetchMore({
-          variables: {
-            pageNum: this.pageNum,
-            pageSize
-          },
-          updateQuery: (prevResult, { fetchMoreResult }) => {
-            console.log('previous result', prevResult.infiniteScrollPosts.posts);
-            console.log('hasMore', fetchMoreResult);
-
-            const newPosts = fetchMoreResult.infiniteScrollPosts.posts;
-            const hasMore = fetchMoreResult.infiniteScrollPosts.hasMore;
-            return {
-              infiniteScrollPosts: {
-                __typename: prevResult.infiniteScrollPosts.__typename,
-                posts: [...prevResult.infiniteScrollPosts.posts, ...newPosts],
-                hasMore
-              }
-            };
-          }
-        });
-      },
-      goToPost(postId) {
-        this.$router.push(`/posts/${postId}`);
-      },
-      formatCreatedDate(date) {
-        return moment(new Date(date)).format('ll');
+        pageSize
       }
     }
-  };
+  },
+  computed: {
+    showMoreEnabled() {
+      return this.infiniteScrollPosts && this.infiniteScrollPosts.hasMore;
+    }
+  },
+  methods: {
+    showMorePosts() {
+      this.pageNum += 1;
+
+      this.$apollo.queries.infiniteScrollPosts.fetchMore({
+        variables: {
+          pageNum: this.pageNum,
+          pageSize
+        },
+        updateQuery: (prevResult, { fetchMoreResult }) => {
+          const newPosts = fetchMoreResult.infiniteScrollPosts.posts;
+          const hasMore = fetchMoreResult.infiniteScrollPosts.hasMore;
+          return {
+            infiniteScrollPosts: {
+              __typename: prevResult.infiniteScrollPosts.__typename,
+              posts: [...prevResult.infiniteScrollPosts.posts, ...newPosts],
+              hasMore
+            }
+          };
+        }
+      });
+    },
+    goToPost(postId) {
+      this.$router.push(`/posts/${postId}`);
+    },
+    formatCreatedDate(date) {
+      return moment(new Date(date)).format('ll');
+    }
+  }
+};
 </script>

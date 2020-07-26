@@ -6,7 +6,6 @@ import vuetify from './plugins/vuetify';
 
 import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
-import { createNamespacedHelpers } from 'vuex';
 
 import FormAlert from './components/Shared/FormAlert';
 

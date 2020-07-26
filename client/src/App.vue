@@ -123,13 +123,13 @@
   </v-app>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters } from 'vuex';
 
 export default {
-  name: "App",
+  name: 'App',
   data() {
     return {
-      searchTerm: "",
+      searchTerm: '',
       sideNav: false,
       authSnackbar: false,
       authErrorSnackbar: false,
@@ -155,30 +155,30 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["searchResults", "authError", "user", "userFavorites"]),
+    ...mapGetters(['searchResults', 'authError', 'user', 'userFavorites']),
     horizontalNavItems() {
       let items = [
-        { icon: "chat", title: "Posts", link: "/posts" },
-        { icon: "lock_open", title: "Sign In", link: "/signin" },
-        { icon: "create", title: "Sign Up", link: "/signup" }
+        { icon: 'chat', title: 'Posts', link: '/posts' },
+        { icon: 'lock_open', title: 'Sign In', link: '/signin' },
+        { icon: 'create', title: 'Sign Up', link: '/signup' }
       ];
       if (this.user) {
-        items = [{ icon: "chat", title: "Posts", link: "/posts" }];
+        items = [{ icon: 'chat', title: 'Posts', link: '/posts' }];
       }
       return items;
     },
     sideNavItems() {
       let items = [
-        { icon: "chat", title: "Posts", link: "/posts" },
-        { icon: "lock_open", title: "Sign In", link: "/signin" },
-        { icon: "create", title: "Sign Up", link: "/signup" }
+        { icon: 'chat', title: 'Posts', link: '/posts' },
+        { icon: 'lock_open', title: 'Sign In', link: '/signin' },
+        { icon: 'create', title: 'Sign Up', link: '/signup' }
       ];
 
       if (this.user) {
         items = [
-          { icon: "chat", title: "Posts", link: "/posts" },
-          { icon: "stars", title: "Create Post", link: "/post/add" },
-          { icon: "account_box", title: "Profile", link: "/profile" }
+          { icon: 'chat', title: 'Posts', link: '/posts' },
+          { icon: 'stars', title: 'Create Post', link: '/post/add' },
+          { icon: 'account_box', title: 'Profile', link: '/profile' }
         ];
       }
       return items;
@@ -186,17 +186,17 @@ export default {
   },
   methods: {
     handleSearchPosts() {
-      this.$store.dispatch("searchPosts", {
+      this.$store.dispatch('searchPosts', {
         searchTerm: this.searchTerm
       });
     },
     handleSignoutUser() {
-      this.$store.dispatch("signoutUser");
+      this.$store.dispatch('signoutUser');
     },
     goToSearchResult(resultId) {
       // clear search term
 
-      this.searchTerm = "";
+      this.searchTerm = '';
 
       // go to desired result
 
@@ -204,16 +204,13 @@ export default {
 
       // Clear Search Results
 
-      this.$store.commit("clearSearchResults");
+      this.$store.commit('clearSearchResults');
     },
     formatDescription(desc) {
       return desc.length > 30 ? `${desc.slice(0, 30)}...` : desc;
     },
     checkIfUserFavorite(resultId) {
-      return (
-        this.userFavorites &&
-        this.userFavorites.some(fave => fave._id === resultId)
-      );
+      return this.userFavorites && this.userFavorites.some(fave => fave._id === resultId);
     },
     toggleSideNav() {
       this.sideNav = !this.sideNav;

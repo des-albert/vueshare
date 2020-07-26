@@ -43,7 +43,18 @@
           <v-form v-model="isFormValid" lazy-validation @submit.prevent="handleAddPostMessage" ref="form">
             <v-layout row>
               <v-flex xs12>
-                <v-text-field v-model="messageBody" clearable :append-outer-icon="messageBody && 'send'" label="Add message" type="text" @click:append-outer="handleAddPostMessage" required prepend-icon="email" :rules="messageRules"> </v-text-field>
+                <v-text-field
+                  v-model="messageBody"
+                  clearable
+                  :append-outer-icon="messageBody && 'send'"
+                  label="Add message"
+                  type="text"
+                  @click:append-outer="handleAddPostMessage"
+                  required
+                  prepend-icon="email"
+                  :rules="messageRules"
+                >
+                </v-text-field>
               </v-flex>
             </v-layout>
           </v-form>
@@ -84,31 +95,23 @@
   </v-container>
 </template>
 <script>
-import {
-  GET_POST,
-  ADD_POST_MESSAGE,
-  LIKE_POST,
-  UNLIKE_POST
-} from "../../queries";
-import { mapGetters } from "vuex";
-import moment from "moment";
+import { GET_POST, ADD_POST_MESSAGE, LIKE_POST, UNLIKE_POST } from '../../queries';
+import { mapGetters } from 'vuex';
+import moment from 'moment';
 
 export default {
-  name: "Post",
-  props: ["postId"],
+  name: 'Post',
+  props: ['postId'],
   data() {
     return {
       postLiked: false,
       dialog: false,
-      messageBody: "",
+      messageBody: '',
       isFormValid: true,
-      messageRules: [
-        message => !!message || "Message is required",
-        message =>
-          message.length < 50 || "Message must be less than 50 characters"
-      ]
+      messageRules: [message => !!message || 'Message is required', message => (message && message.length < 50) || 'Message must be less than 50 characters']
     };
   },
+
   apollo: {
     getPost: {
       query: GET_POST,
@@ -120,17 +123,14 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["user", "userFavorites"])
+    ...mapGetters(['user', 'userFavorites'])
   },
   methods: {
     getTimeFromNow(time) {
       return moment(new Date(time)).fromNow();
     },
     checkIfPostLiked(postId) {
-      if (
-        this.userFavorites &&
-        this.userFavorites.some(fave => fave._id === postId)
-      ) {
+      if (this.userFavorites && this.userFavorites.some(fave => fave._id === postId)) {
         this.postLiked = true;
         return true;
       } else {
@@ -172,7 +172,7 @@ export default {
             ...this.user,
             favorites: data.likePost.favorites
           };
-          this.$store.commit("setUser", updatedUser);
+          this.$store.commit('setUser', updatedUser);
         })
         .catch(err => console.error(err));
     },
@@ -203,7 +203,7 @@ export default {
             ...this.user,
             favorites: data.unlikePost.favorites
           };
-          this.$store.commit("setUser", updatedUser);
+          this.$store.commit('setUser', updatedUser);
         })
         .catch(err => console.error(err));
     },
@@ -234,7 +234,7 @@ export default {
             }
           })
           .then(({ data }) => {
-            this.$refs.forms.reset();
+            this.$refs.form.reset();
             console.log(data.addPostMessage);
           })
           .catch(err => console.error(err));
@@ -258,6 +258,5 @@ export default {
 <style scoped>
 #post__image {
   height: 400px !important;
-}
-</style
+}</style
 >>
