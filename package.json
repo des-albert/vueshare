@@ -13,7 +13,7 @@
   "repository": "https://github.com/des-albert/vueshare",
   "dependencies": {
     "apollo-server": "^2.16.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "graphql": "^14.7.0",
     "jsonwebtoken": "^8.5.1",
